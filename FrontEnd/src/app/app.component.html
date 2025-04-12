@@ -1,5 +1,5 @@
 <p>Hello</p>
-
+<!-- User Input Form-->
 <label for="bugTitle">Title: </label>
 <input type="text" (input)="onTextInput($event)" id="bugTitle" placeholder="Title or Error Code" ><br><br>
 
@@ -9,19 +9,35 @@ to reproduce"><br><br>
 
 <label for="bugPriority">Priority: </label>
 <select id="bugPriority" (change)="onSelectionChange($event)">
-  <option *ngFor="let option of ['Select', 'High', 'Medium', 'Low']" 
+  <option *ngFor="let option of ['Please Select', 'High', 'Medium', 'Low']" 
   value="{{option}}">{{option}}</option>
 </select>
+
+<!-- Condition Messages to display when trying to postBug()-->
 <br>
+<div *ngIf="errorMessageVisible">
+  Please fill all fields before sending.
+</div>
+<div *ngIf="successMessageVisible">
+  Thank you for your report!
+</div>
+<div *ngIf="doubleEntryMessageVisible">
+  You have already reported a bug. Please refresh the page before submitting again.
+</div>
+<!-- postBug() POST to server.js-->
 <button (click)="postBug()">Submit</button>
 <br><br>
+
+<!-- getBugs() GET from server.js all Bugs in (Memory) DB-->
 <button (click)="getBugs()">Get Bugs</button>
 
+<!-- Iterate over all Bugs in DB and display each one of them-->
 <li *ngFor="let bug of bugsDisplay()">
 
-  <div> {{bug.id}}</div>
-  <div> {{bug.description}} </div>
-  <div> {{bug.priority}} </div>
-  <div> {{bug.time}} </div>
+  <div>ID:  {{bug.id}}</div>
+  <div>Title: {{bug.title}}</div>
+  <div>Description: {{bug.description}} </div>
+  <div>Priority: {{bug.priority}} </div>
+  <div>Reported on: {{bug.time}} </div>
 
 </li>

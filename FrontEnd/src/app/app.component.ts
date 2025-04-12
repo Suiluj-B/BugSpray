@@ -16,29 +16,27 @@ import { json } from 'express';
 
 
 export class AppComponent {
-  
+  constructor(private apiService: ApiService) {}
 
-
-  //message!: string
+  //Used for user input.
   bugTitle = signal<string>('')
   bugDescription = signal<string>('')
   bugPriority = signal<string>('Select')
-  
 
-
-
-  
-  //////////////////////////////////////////
-  bugs!: Object
+  //Used to display all bugs in DB after GET.
   bugsDisplay = signal<any>([])
-  //wholeBugs!: []
 
-  constructor(private apiService: ApiService) {
-    //this.jstoday = formatDate(this.bugDateReported, "toLocaleDateString", 'en-US', '+0530')
-  }
-  
-  message = signal<string>('').toString()
+  //Display Messages as Feedback to User.
+  errorMessageVisible = false;
+  successMessageVisible = false;
+  bugReported = false;
+  doubleEntryMessageVisible = false;
+
+
+
   //////////////////////////////////////
+  //Tracks text fields. the second to last line is my favorite in the whole project.
+  //////////////
   onTextInput(event: Event){
     const value = (event.target as HTMLInputElement).value;
     const id = (event.target as HTMLInputElement).id;
@@ -48,24 +46,51 @@ export class AppComponent {
     console.log((this as any)[id])
   }
 
+  //Tracks select field input.
   onSelectionChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
     this.bugPriority.set(value)
     console.log(this.bugPriority())
   }
 
-  // This is the URL of the backend API
+  
   // I'll reuse this structure: 
   // https://stackoverflow.com/questions/61720971/how-to-extract-data-from-an-observable-in-angular
+  // #Update: I dont think I did follow this in the end.
   postBug() {
+    const continueWithReport = this.checkFieldsForContent()
+    if (continueWithReport == false){
+      return Error("Provide all fields")}
+
+    else{
     const bugReport = {title: this.bugTitle.toString(), description: this.bugDescription.toString(), priority: this.bugPriority().toString()}
     console.log(this.bugTitle.toString())
     const jsonPayload = JSON.stringify(bugReport)
     this.apiService.postBugs(jsonPayload)
-    //this.apiService.postBugs(bugTitle, bugDescription, bugPriority).subscribe({
-
+    return}
     }
-  
+    
+  checkFieldsForContent() {
+    // Check if all fields have content.
+    if (this.bugPriority()==='Please Select' || this.bugTitle.toString()==="[Signal: ]" || this.bugDescription.toString() === "[Signal: ]"){
+      this.errorMessageVisible = true
+      this.successMessageVisible = false
+      return false
+
+    // Check if the same bug was already reported (by this user). Might need to be fixed again after refactoring.
+    } else if(this.bugReported == true){
+      this.doubleEntryMessageVisible = true  
+      return false
+
+    //If everything is fine, hide errors and continue.
+    } else {(this.bugPriority()!='Select' && this.bugTitle.length > 0 && this.bugDescription.length > 0)
+      console.log('Success')
+      this.errorMessageVisible = false
+      this.successMessageVisible = true
+      this.bugReported = true
+      return true
+    }
+  }
 
   getBugs() {
     this.apiService.getBugs().subscribe({
@@ -86,13 +111,7 @@ export class AppComponent {
       }
 
     })
-   // this.bugs.array.forEach((element: any) => {
-   //   this.wholeBugs = element.allBugs.data
-   // });
-    
-    //const incomingMessage = this.apiService.getBugs().subscribe()
-    //const bugs = incomingMessage
-    //console.log("Message: ",bugs)
+
 
   }
 }

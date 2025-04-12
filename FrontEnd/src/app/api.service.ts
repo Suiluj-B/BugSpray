@@ -16,9 +16,10 @@ export class ApiService {
   // This service can now make HTTP requests via `this.http`.
     postBugs(postMessage: string) {
         const headers = new HttpHeaders({
+            //figuring this out took some time. Not necessarily this line, but using Express and putting the right headers to get all functions to work.
             'Content-Type': 'application/json',
         })
-
+        //I did not .subscribe initially, which taught me how lazy Angular really is.
         this.http.post(this.bugsUrl,postMessage, {headers}).subscribe()
         console.log("Reached api.service")
     }
@@ -30,26 +31,3 @@ export class ApiService {
 
 
 }
-
-//Example from YT to look at should I need help with syntax.
-//export class ApiService {
-//    constructor(private http: HttpClient) { }
-//
-//    postSanitizer<K extends string>(
-//        o: Record<K, string>, key: K
-//    ) {
-//        const sanitizedToString: string = o[key]
-//        return sanitizedToString
-//    }
-//    getMessage() {
-//        return this.http.get(
-//            'http://localhost:3000/api/message');
-//    }
-//
-//    postMessage(anyObject) {
-//        this.postSanitizer(anyObject, )
-//        return this.http.post(
-//            'http://localhost:3000/api/message', message
-//        )
-//    }
-//}
