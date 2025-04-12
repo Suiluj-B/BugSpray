@@ -1,0 +1,27 @@
+<p>Hello</p>
+
+<label for="bugTitle">Title: </label>
+<input type="text" (input)="onTextInput($event)" id="bugTitle" placeholder="Title or Error Code" ><br><br>
+
+<label for="bugDescription">Description: </label>
+<input type="text" (input)="onTextInput($event)" id="bugDescription" placeholder="Describe what happened and if possible how
+to reproduce"><br><br>
+
+<label for="bugPriority">Priority: </label>
+<select id="bugPriority" (change)="onSelectionChange($event)">
+  <option *ngFor="let option of ['Select', 'High', 'Medium', 'Low']" 
+  value="{{option}}">{{option}}</option>
+</select>
+<br>
+<button (click)="postBug()">Submit</button>
+<br><br>
+<button (click)="getBugs()">Get Bugs</button>
+
+<li *ngFor="let bug of bugsDisplay()">
+
+  <div> {{bug.id}}</div>
+  <div> {{bug.description}} </div>
+  <div> {{bug.priority}} </div>
+  <div> {{bug.time}} </div>
+
+</li>
