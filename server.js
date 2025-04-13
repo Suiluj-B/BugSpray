@@ -2,10 +2,16 @@ const express = require('express');
 const cors = require('cors') //To satisfy CORS Policy
 app = express();
 /////
+//Comply with Cors
 app.use(cors())
 app.use(express.json())
+//BodyParser ! NEEDS CORRECT HEADER !
 const bodyParser = require('body-parser');
 app.use(bodyParser.json({ extended: true }));
+/////
+//Deploy FrontEnd with Express
+const path = require('path')
+app.use(express.static(path.join(__dirname, 'front-end/browser')));
 
 var allBugs = []
 var bugCounter = 0
@@ -39,6 +45,10 @@ app.get('/bugs', (req, res) => {
     //that was the easy part.
     res.json({allBugs});
 });
+
+app.get('', (req, res) => {
+    res.sendFile(path.join(__dirname, 'front-end/browser', 'index.html'));
+  });
 
 app.listen(3000, () => {
     console.log('Server listening on port 3000');

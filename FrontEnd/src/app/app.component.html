@@ -33,10 +33,10 @@ to reproduce"><br><br>
 
 <!-- Iterate over all Bugs in DB and display each one of them-->
  <h3 *ngIf="bugReportRequested">All Bugs</h3>
- <p *ngIf="bugReportRequested">Currently no Bugs reported.</p>
- <p *ngIf="bugReportRequested">If there are, they will be displayed like this:</p>
+ <p *ngIf="noBugsReported">Currently no Bugs reported.</p>
+ <p *ngIf="noBugsReported">If there are, they will be displayed like this:</p>
 <li *ngFor="let bug of bugsDisplay()">
-  <div> {{bug.noBugsTutle}} <div>
+  <div> {{bug.noBugsTitle}} <div>
   <div> ID:  {{bug.id}} </div>
   <div> Title: {{bug.title}} </div>
   <div> Description: {{bug.description}} </div>

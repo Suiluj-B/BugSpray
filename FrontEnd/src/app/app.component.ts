@@ -8,7 +8,7 @@ import { json } from 'express';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule],
+  imports: [CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -32,7 +32,7 @@ export class AppComponent {
   bugReported = false;
   doubleEntryMessageVisible = false;
   bugReportRequested = false;
-
+  noBugsReported = false;
 
 
   //////////////////////////////////////
@@ -44,7 +44,6 @@ export class AppComponent {
     //Chefs kiss - I can use (this as any) and feed the string of .id to it, to update my variables. Much cleaner than multiple if-statements.
     //I suspect it might change the structure of the variable compared to setting it via x.set(). But it works for now.
     (this as any)[id] = value
-    console.log((this as any)[id])
   }
 
   //Tracks select field input.
@@ -84,14 +83,22 @@ export class AppComponent {
       return false
 
     //If everything is fine, hide errors and continue.
-    } else {(this.bugPriority()!='Please Select' && this.bugTitle.length > 0 && this.bugDescription.length > 0)
-      console.log('Success')
+    } else if(this.bugPriority()!=='Please Select' && this.bugTitle.length >= 1 && this.bugDescription.length >= 1){
+      console.log(this.bugTitle.length, this.bugTitle)
+      console.log(this.bugDescription.length, this.bugDescription)
       this.errorMessageVisible = false
       this.successMessageVisible = true
       this.bugReported = true
       return true
+    } else(0 === 0)
+      this.errorMessageVisible = true
+      this.successMessageVisible = false
+      return false
     }
-  }
+      
+  
+  
+  
 
   getBugs() {
     this.bugReportRequested = true
@@ -107,9 +114,14 @@ export class AppComponent {
           }))
         )
           
-        if (this.bugsDisplay().length == 0)
-          this.bugsDisplay.set([{noBugsTutle: 'No bugs reported by server.'}])
-        console.log("Transformed Bugs: ", this.bugsDisplay())
+        if (this.bugsDisplay().length == 0){
+          this.bugsDisplay.set([{noBugsTitle: 'No bugs reported by server.'}])
+          this.noBugsReported = true
+        console.log("Transformed Bugs: ", this.bugsDisplay())}
+        else{
+          this.noBugsReported = false;
+        }
+
       },
 
       error: (err) => {
