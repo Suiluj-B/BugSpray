@@ -21,7 +21,7 @@ export class AppComponent {
   //Used for user input.
   bugTitle = signal<string>('')
   bugDescription = signal<string>('')
-  bugPriority = signal<string>('Select')
+  bugPriority = signal<string>('Please Select')
 
   //Used to display all bugs in DB after GET.
   bugsDisplay = signal<any>([])
@@ -31,6 +31,7 @@ export class AppComponent {
   successMessageVisible = false;
   bugReported = false;
   doubleEntryMessageVisible = false;
+  bugReportRequested = false;
 
 
 
@@ -83,7 +84,7 @@ export class AppComponent {
       return false
 
     //If everything is fine, hide errors and continue.
-    } else {(this.bugPriority()!='Select' && this.bugTitle.length > 0 && this.bugDescription.length > 0)
+    } else {(this.bugPriority()!='Please Select' && this.bugTitle.length > 0 && this.bugDescription.length > 0)
       console.log('Success')
       this.errorMessageVisible = false
       this.successMessageVisible = true
@@ -93,6 +94,7 @@ export class AppComponent {
   }
 
   getBugs() {
+    this.bugReportRequested = true
     this.apiService.getBugs().subscribe({
       next: (response: any) =>{
         console.log("Bugs: ", response)
@@ -101,11 +103,15 @@ export class AppComponent {
           response.allBugs.map((bug: any) => ({
             id: bug.id,
             ...JSON.parse(bug.data), // Parse the `data` field into an object
-            time: bug.time
+            createdAt: bug.createdAt
           }))
         )
-        console.log("Transformed Bugs: ", this.bugsDisplay())        
+          
+        if (this.bugsDisplay().length == 0)
+          this.bugsDisplay.set([{noBugsTutle: 'No bugs reported by server.'}])
+        console.log("Transformed Bugs: ", this.bugsDisplay())
       },
+
       error: (err) => {
         console.error("Error fetching bugs: ", err);
       }

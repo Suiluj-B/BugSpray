@@ -1,4 +1,4 @@
-<p>Hello</p>
+<p>Bug Tracker Lite</p>
 <!-- User Input Form-->
 <label for="bugTitle">Title: </label>
 <input type="text" (input)="onTextInput($event)" id="bugTitle" placeholder="Title or Error Code" ><br><br>
@@ -32,12 +32,14 @@ to reproduce"><br><br>
 <button (click)="getBugs()">Get Bugs</button>
 
 <!-- Iterate over all Bugs in DB and display each one of them-->
+ <h3 *ngIf="bugReportRequested">All Bugs</h3>
+ <p *ngIf="bugReportRequested">Currently no Bugs reported.</p>
+ <p *ngIf="bugReportRequested">If there are, they will be displayed like this:</p>
 <li *ngFor="let bug of bugsDisplay()">
+  <div> {{bug.noBugsTutle}} <div>
+  <div> ID:  {{bug.id}} </div>
+  <div> Title: {{bug.title}} </div>
+  <div> Description: {{bug.description}} </div>
+  <div> Priority: {{bug.priority}} </div>
+  <div> Reported on: {{bug.createdAt}} </div>
 
-  <div>ID:  {{bug.id}}</div>
-  <div>Title: {{bug.title}}</div>
-  <div>Description: {{bug.description}} </div>
-  <div>Priority: {{bug.priority}} </div>
-  <div>Reported on: {{bug.time}} </div>
-
-</li>
